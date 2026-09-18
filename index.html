@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>kdarkacy</title>
+    <!-- Favicon setting -->
+    <link rel="icon" type="image/png" href="kdarkacy.png">
+    
+    <!-- Fonts: Inter & Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            black: '#070709',
+                            card: '#111116',
+                            border: '#261219',
+                            crimson: '#86161b',
+                            brightRed: '#86161b',
+                            darkRed: '#990022',
+                            glow: 'rgba(134, 22, 27, 0.4)'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Outfit', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Custom CSS Animations & Styles -->
+    <style>
+        body {
+            background-color: #070709;
+            color: #e5e7eb;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Glassmorphism utility */
+        .glass-card {
+            background: rgba(17, 17, 22, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 26, 64, 0.15);
+        }
+
+        .glass-card:hover {
+            border-color: rgba(255, 26, 64, 0.4);
+            box-shadow: 0 10px 30px -10px rgba(255, 26, 64, 0.25);
+        }
+
+        .glass-nav {
+            background: rgba(7, 7, 9, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 26, 64, 0.12);
+        }
+
+        /* Glowing text effect */
+        .text-glow {
+            text-shadow: 0 0 15px rgba(255, 26, 64, 0.6), 0 0 30px rgba(255, 26, 64, 0.3);
+        }
+
+        .box-glow {
+            box-shadow: 0 0 25px rgba(255, 26, 64, 0.35);
+        }
+
+        /* Keyframe animations for avatar glowing ring */
+        @keyframes spinSlow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes spinReverse {
+            from { transform: rotate(360deg); }
+            to { transform: rotate(0deg); }
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 0.8;
+                box-shadow: 0 0 25px rgba(255, 26, 64, 0.5);
+            }
+            50% {
+                transform: scale(1.05);
+                opacity: 1;
+                box-shadow: 0 0 45px rgba(255, 26, 64, 0.85);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .animate-spin-slow {
+            animation: spinSlow 15s linear infinite;
+        }
+
+        .animate-spin-reverse {
+            animation: spinReverse 22s linear infinite;
+        }
+
+        .animate-pulse-glow {
+            animation: pulseGlow 4s ease-in-out infinite;
+        }
+
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #070709;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #330a13;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #ff1a40;
+        }
+    </style>
+</head>
+<body class="relative min-h-screen text-slate-100 selection:bg-brand-crimson selection:text-white">
+
+    <!-- Particle Background Canvas -->
+    <canvas id="particleCanvas" class="fixed inset-0 pointer-events-none z-0"></canvas>
+
+    <!-- Navigation Header -->
+    <header class="fixed top-0 left-0 right-0 z-50 glass-nav transition-all duration-300">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Brand Logo -->
+            <a href="#home" class="flex items-center gap-3 group">
+                <div class="w-10 h-10 rounded-full border border-brand-crimson/50 flex items-center justify-center bg-brand-card overflow-hidden group-hover:border-brand-crimson transition-colors">
+                    <img src="kdarkacy.png" alt="kdarkacy logo" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://placehold.co/100x100/111116/ff1a40?text=KD';">
+                </div>
+                <span class="font-display font-extrabold text-2xl tracking-wider text-white group-hover:text-brand-crimson transition-colors">
+                    kdarkacy<span class="text-brand-crimson">.</span>
+                </span>
+            </a>
+
+            <!-- Desktop Nav Links -->
+            <nav class="hidden md:flex items-center space-x-6 text-sm font-medium">
+                <a href="#home" data-i18n="navHome" class="text-slate-300 hover:text-brand-crimson transition-colors">Home</a>
+                <a href="#about" data-i18n="navAbout" class="text-slate-300 hover:text-brand-crimson transition-colors">About</a>
+                <a href="#socials" data-i18n="navLinks" class="text-slate-300 hover:text-brand-crimson transition-colors">Links</a>
+                <a href="#contact" data-i18n="navContact" class="text-slate-300 hover:text-brand-crimson transition-colors">Contact</a>
+                <button onclick="openPrivacyModal()" data-i18n="navPrivacy" class="text-slate-400 hover:text-brand-crimson transition-colors text-xs uppercase tracking-wider">Privacy Policy</button>
+                
+                <!-- Desktop Language Selector Dropdown -->
+                <div class="relative inline-block text-left ml-2">
+                    <select id="langSelect" onchange="changeLanguage(this.value)" class="bg-brand-card/90 text-slate-200 border border-brand-crimson/40 text-xs rounded-xl px-3 py-1.5 focus:outline-none focus:border-brand-crimson cursor-pointer hover:border-brand-crimson transition-all font-semibold shadow-inner">
+                        <option value="en" class="bg-brand-card text-slate-200">🌐 EN</option>
+                        <option value="de" class="bg-brand-card text-slate-200">🌐 DE</option>
+                        <option value="lt" class="bg-brand-card text-slate-200">🌐 LT</option>
+                        <option value="ru" class="bg-brand-card text-slate-200">🌐 RU</option>
+                    </select>
+                </div>
+            </nav>
+
+            <!-- Mobile Menu Toggle Button -->
+            <button id="mobileMenuBtn" aria-label="Toggle Navigation Menu" class="md:hidden p-2 text-slate-300 hover:text-white focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path id="menuIcon" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Mobile Nav Menu -->
+        <div id="mobileMenu" class="hidden md:hidden glass-nav border-b border-brand-crimson/20 px-4 pt-2 pb-6 space-y-3">
+            <a href="#home" data-i18n="navHome" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-slate-200 hover:bg-brand-crimson/10 hover:text-brand-crimson">Home</a>
+            <a href="#about" data-i18n="navAbout" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-slate-200 hover:bg-brand-crimson/10 hover:text-brand-crimson">About</a>
+            <a href="#socials" data-i18n="navLinks" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-slate-200 hover:bg-brand-crimson/10 hover:text-brand-crimson">Links</a>
+            <a href="#contact" data-i18n="navContact" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-slate-200 hover:bg-brand-crimson/10 hover:text-brand-crimson">Contact</a>
+            <button onclick="openPrivacyModal(); closeMobileMenu();" data-i18n="navPrivacy" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-slate-400 hover:text-brand-crimson">Privacy Policy</button>
+            
+            <!-- Mobile Language Selector -->
+            <div class="pt-2 border-t border-slate-800/80 flex items-center justify-between px-3">
+                <span data-i18n="mobileLangLabel" class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Language</span>
+                <select id="mobileLangSelect" onchange="changeLanguage(this.value)" class="bg-brand-card text-slate-200 border border-brand-crimson/40 text-xs rounded-xl px-3 py-1.5 focus:outline-none focus:border-brand-crimson cursor-pointer font-semibold">
+                    <option value="en" class="bg-brand-card">English (EN)</option>
+                    <option value="de" class="bg-brand-card">Deutsch (DE)</option>
+                    <option value="lt" class="bg-brand-card">Lietuvių (LT)</option>
+                    <option value="ru" class="bg-brand-card">Русский (RU)</option>
+                </select>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="relative z-10 pt-20">
+
+        <!-- Hero Section -->
+        <section id="home" class="min-h-[90vh] flex items-center justify-center py-16 px-4 sm:px-6">
+            <div class="max-w-4xl mx-auto text-center flex flex-col items-center">
+                
+                <!-- Status Badge -->
+                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass-card border-brand-crimson/30 text-xs font-semibold tracking-wide text-slate-300 mb-10 animate-float">
+                    <span class="w-2.5 h-2.5 rounded-full bg-brand-crimson animate-ping"></span>
+                    <span data-i18n="heroBadge" class="text-brand-brightRed font-medium">Creating Content & Streaming</span>
+                </div>
+
+                <!-- Animated Profile Picture Container -->
+                <div class="relative w-56 h-56 sm:w-64 sm:h-64 mb-10 flex items-center justify-center">
+                    
+                    <!-- Outer Rotating Gradient Ring 1 -->
+                    <div class="absolute inset-0 rounded-full border-2 border-dashed border-brand-crimson/60 animate-spin-slow"></div>
+                    
+                    <!-- Outer Rotating Reverse Ring 2 -->
+                    <div class="absolute -inset-3 rounded-full border border-brand-brightRed/40 border-t-brand-crimson animate-spin-reverse"></div>
+                    
+                    <!-- Pulsing Glow Ring 3 -->
+                    <div class="absolute -inset-1 rounded-full bg-gradient-to-tr from-brand-darkRed via-brand-crimson to-transparent opacity-70 blur-md animate-pulse-glow"></div>
+
+                    <!-- Inner Avatar Container -->
+                    <div class="relative w-48 h-48 sm:w-56 sm:h-56 rounded-full p-1 bg-gradient-to-b from-brand-crimson via-brand-card to-brand-black shadow-2xl overflow-hidden z-10">
+                        <img 
+                            src="kdarkacy.png" 
+                            alt="kdarkacy Profile Picture" 
+                            class="w-full h-full object-cover rounded-full transition-transform duration-500 hover:scale-105"
+                            onerror="this.onerror=null; this.src='https://placehold.co/400x400/111116/ff1a40?text=kdarkacy';"
+                        />
+                    </div>
+
+                    <!-- Ambient Floating Glow Orb Behind -->
+                    <div class="absolute w-full h-full rounded-full bg-brand-crimson/20 blur-2xl -z-10"></div>
+                </div>
+
+                <!-- Conversational Hero Headings -->
+                <h1 class="font-display text-4xl sm:text-6xl font-black tracking-tight text-white mb-4">
+                    <span data-i18n="heroGreeting">Hey, I'm</span> <span class="text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-100 to-brand-brightRed text-glow">kdarkacy</span> 👋
+                </h1>
+                
+                <p data-i18n="heroSubtitle" class="text-lg sm:text-xl text-slate-300 max-w-2xl font-light leading-relaxed mb-8">
+                     Pressure and time
+                </p>
+
+                <!-- Call To Action Buttons -->
+                <div class="flex flex-wrap items-center justify-center gap-4">
+                    <a href="#socials" data-i18n="ctaSocials" class="px-8 py-3.5 rounded-xl font-semibold bg-gradient-to-r from-brand-crimson to-brand-darkRed text-white hover:from-brand-brightRed hover:to-brand-crimson transition-all duration-300 shadow-lg shadow-brand-crimson/30 hover:shadow-brand-crimson/60 hover:-translate-y-0.5">
+                        Check My Socials
+                    </a>
+                    <a href="#contact" data-i18n="ctaContact" class="px-8 py-3.5 rounded-xl font-semibold glass-card text-slate-200 hover:text-white hover:bg-brand-crimson/10 transition-all duration-300 hover:-translate-y-0.5">
+                        Get In Touch
+                    </a>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Social Links Section -->
+        <section id="socials" class="py-20 px-4 sm:px-6">
+            <div class="max-w-5xl mx-auto">
+                <div class="text-center mb-14">
+                    <h2 data-i18n="socialsTitle" class="font-display text-3xl sm:text-4xl font-extrabold text-white mb-3">
+                        Stay Connected
+                    </h2>
+                    <p data-i18n="socialsSubtitle" class="text-slate-400 max-w-lg mx-auto text-sm sm:text-base">
+                        On all major platforms under <span class="text-brand-brightRed font-semibold">@kdarkacy</span>. Tap any card below to join!
+                    </p>
+                </div>
+
+                <!-- Cards Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+                    <!-- YouTube -->
+                    <a href="https://youtube.com/@kdarkacy" target="_blank" rel="noopener noreferrer" class="glass-card rounded-2xl p-6 flex flex-col justify-between group transition-all duration-300 hover:-translate-y-1">
+                        <div>
+                            <div class="w-12 h-12 rounded-xl bg-red-600/10 border border-red-500/20 flex items-center justify-center text-red-500 mb-5 group-hover:scale-110 group-hover:bg-red-600 group-hover:text-white transition-all">
+                                <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24">
+                                    <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                                </svg>
+                            </div>
+                            <h3 class="font-display text-xl font-bold text-white mb-1">YouTube</h3>
+                            <p data-i18n="ytDesc" class="text-slate-400 text-xs mb-4">Videos, highlights & long-form gaming content.</p>
+                        </div>
+                        <div class="flex items-center justify-between text-xs font-semibold text-brand-brightRed group-hover:text-white transition-colors">
+                            <span>@kdarkacy</span>
+                            <span data-i18n="ytAction" class="group-hover:translate-x-1 transition-transform">Visit &rarr;</span>
+                        </div>
+                    </a>
+
+                    <!-- Twitch -->
+                    <a href="https://twitch.tv/kdarkacy" target="_blank" rel="noopener noreferrer" class="glass-card rounded-2xl p-6 flex flex-col justify-between group transition-all duration-300 hover:-translate-y-1">
+                        <div>
+                            <div class="w-12 h-12 rounded-xl bg-purple-600/10 border border-purple-500/20 flex items-center justify-center text-purple-400 mb-5 group-hover:scale-110 group-hover:bg-purple-600 group-hover:text-white transition-all">
+                                <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24">
+                                    <path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714z"/>
+                                </svg>
+                            </div>
+                            <h3 class="font-display text-xl font-bold text-white mb-1">Twitch</h3>
+                            <p data-i18n="twitchDesc" class="text-slate-400 text-xs mb-4">Catch me live playing games & hanging out with chat.</p>
+                        </div>
+                        <div class="flex items-center justify-between text-xs font-semibold text-brand-brightRed group-hover:text-white transition-colors">
+                            <span>@kdarkacy</span>
+                            <span data-i18n="twitchAction" class="group-hover:translate-x-1 transition-transform">Watch Live &rarr;</span>
+                        </div>
+                    </a>
+
+                    <!-- Instagram -->
+                    <a href="https://instagram.com/kdarkacy" target="_blank" rel="noopener noreferrer" class="glass-card rounded-2xl p-6 flex flex-col justify-between group transition-all duration-300 hover:-translate-y-1">
+                        <div>
+                            <div class="w-12 h-12 rounded-xl bg-pink-600/10 border border-pink-500/20 flex items-center justify-center text-pink-500 mb-5 group-hover:scale-110 group-hover:bg-gradient-to-tr group-hover:from-amber-500 group-hover:via-pink-600 group-hover:to-purple-600 group-hover:text-white transition-all">
+                                <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24">
+                                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                                </svg>
+                            </div>
+                            <h3 class="font-display text-xl font-bold text-white mb-1">Instagram</h3>
+                            <p data-i18n="instaDesc" class="text-slate-400 text-xs mb-4">Photos, behind-the-scenes, and life updates.</p>
+                        </div>
+                        <div class="flex items-center justify-between text-xs font-semibold text-brand-brightRed group-hover:text-white transition-colors">
+                            <span>@kdarkacy</span>
+                            <span data-i18n="instaAction" class="group-hover:translate-x-1 transition-transform">Follow &rarr;</span>
+                        </div>
+                    </a>
+
+                    <!-- TikTok -->
+                    <a href="https://tiktok.com/@kdarkacy" target="_blank" rel="noopener noreferrer" class="glass-card rounded-2xl p-6 flex flex-col justify-between group transition-all duration-300 hover:-translate-y-1">
+                        <div>
+                            <div class="w-12 h-12 rounded-xl bg-cyan-600/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 mb-5 group-hover:scale-110 group-hover:bg-cyan-500 group-hover:text-black transition-all">
+                                <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24">
+                                    <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.67 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.82.56-1.31 1.52-1.33 2.52-.02 1.25.72 2.45 1.83 2.97.97.47 2.14.42 3.06-.11.83-.47 1.39-1.33 1.49-2.28.08-2.28.02-4.57.04-6.85.01-3.34.01-6.68.01-10.02z"/>
+                                </svg>
+                            </div>
+                            <h3 class="font-display text-xl font-bold text-white mb-1">TikTok</h3>
+                            <p data-i18n="tiktokDesc" class="text-slate-400 text-xs mb-4">Short clips, memes, and quick daily highlights.</p>
+                        </div>
+                        <div class="flex items-center justify-between text-xs font-semibold text-brand-brightRed group-hover:text-white transition-colors">
+                            <span>@kdarkacy</span>
+                            <span data-i18n="tiktokAction" class="group-hover:translate-x-1 transition-transform">Watch Clips &rarr;</span>
+                        </div>
+                    </a>
+
+                    <!-- Twitter / X -->
+                    <a href="https://twitter.com/kdarkacy" target="_blank" rel="noopener noreferrer" class="glass-card rounded-2xl p-6 flex flex-col justify-between group transition-all duration-300 hover:-translate-y-1">
+                        <div>
+                            <div class="w-12 h-12 rounded-xl bg-slate-700/20 border border-slate-600/30 flex items-center justify-center text-slate-200 mb-5 group-hover:scale-110 group-hover:bg-slate-200 group-hover:text-black transition-all">
+                                <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                                </svg>
+                            </div>
+                            <h3 class="font-display text-xl font-bold text-white mb-1">Twitter / X</h3>
+                            <p data-i18n="twitterDesc" class="text-slate-400 text-xs mb-4">Thoughts, updates, stream announcements & banter.</p>
+                        </div>
+                        <div class="flex items-center justify-between text-xs font-semibold text-brand-brightRed group-hover:text-white transition-colors">
+                            <span>@kdarkacy</span>
+                            <span data-i18n="twitterAction" class="group-hover:translate-x-1 transition-transform">Read Tweets &rarr;</span>
+                        </div>
+                    </a>
+
+                    <!-- Patreon -->
+                    <a href="https://patreon.com/kdarkacy" target="_blank" rel="noopener noreferrer" class="glass-card rounded-2xl p-6 flex flex-col justify-between group transition-all duration-300 hover:-translate-y-1">
+                        <div>
+                            <div class="w-12 h-12 rounded-xl bg-orange-600/10 border border-orange-500/20 flex items-center justify-center text-orange-400 mb-5 group-hover:scale-110 group-hover:bg-orange-500 group-hover:text-white transition-all">
+                                <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24">
+                                    <path d="M15.386.524c-4.764 0-8.64 3.876-8.64 8.64 0 4.75 3.876 8.613 8.64 8.613 4.75 0 8.614-3.864 8.614-8.613C24 4.4 20.136.524 15.386.524M.003 23.537h4.22V.524H.003"/>
+                                </svg>
+                            </div>
+                            <h3 class="font-display text-xl font-bold text-white mb-1">Patreon</h3>
+                            <p data-i18n="patreonDesc" class="text-slate-400 text-xs mb-4">Exclusive content, perks, and direct support.</p>
+                        </div>
+                        <div class="flex items-center justify-between text-xs font-semibold text-brand-brightRed group-hover:text-white transition-colors">
+                            <span>@kdarkacy</span>
+                            <span data-i18n="patreonAction" class="group-hover:translate-x-1 transition-transform">Support &rarr;</span>
+                        </div>
+                    </a>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Reach Us / Contact Section -->
+        <section id="contact" class="py-20 px-4 sm:px-6 relative">
+            <div class="max-w-4xl mx-auto">
+                <div class="glass-card rounded-3xl p-8 sm:p-12 relative overflow-hidden">
+                    
+                    <div class="text-center max-w-xl mx-auto mb-10">
+                        <h2 data-i18n="contactTitle" class="font-display text-3xl sm:text-4xl font-extrabold text-white mb-3">
+                            Reach Us
+                        </h2>
+                        <p class="text-slate-300 text-sm sm:text-base leading-relaxed"></p>
+                    </div>
+
+                    <!-- Contact Form -->
+                    <form id="contactForm" onsubmit="handleFormSubmit(event)" class="space-y-6">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                            <!-- Name -->
+                            <div>
+                                <label for="name" data-i18n="formNameLabel" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Your Name</label>
+                                <input type="text" id="name" required data-i18n-placeholder="formNamePlaceholder" placeholder="Alex Mercer" class="w-full px-4 py-3 rounded-xl bg-black/50 border border-slate-800 text-white placeholder-slate-500 focus:outline-none focus:border-brand-crimson focus:ring-1 focus:ring-brand-crimson transition-all text-sm">
+                            </div>
+
+                            <!-- Email -->
+                            <div>
+                                <label for="email" data-i18n="formEmailLabel" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Your Email</label>
+                                <input type="email" id="email" required data-i18n-placeholder="formEmailPlaceholder" placeholder="alex@example.com" class="w-full px-4 py-3 rounded-xl bg-black/50 border border-slate-800 text-white placeholder-slate-500 focus:outline-none focus:border-brand-crimson focus:ring-1 focus:ring-brand-crimson transition-all text-sm">
+                            </div>
+                        </div>
+
+                        <!-- Subject -->
+                        <div>
+                            <label for="subject" data-i18n="formSubjectLabel" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Subject</label>
+                            <input type="text" id="subject" required data-i18n-placeholder="formSubjectPlaceholder" placeholder="Sponsorship / Collab" class="w-full px-4 py-3 rounded-xl bg-black/50 border border-slate-800 text-white placeholder-slate-500 focus:outline-none focus:border-brand-crimson focus:ring-1 focus:ring-brand-crimson transition-all text-sm">
+                        </div>
+
+                        <!-- Message -->
+                        <div>
+                            <label for="message" data-i18n="formMessageLabel" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Message</label>
+                            <textarea id="message" rows="5" required data-i18n-placeholder="formMessagePlaceholder" placeholder="Hey kdarkacy..." class="w-full px-4 py-3 rounded-xl bg-black/50 border border-slate-800 text-white placeholder-slate-500 focus:outline-none focus:border-brand-crimson focus:ring-1 focus:ring-brand-crimson transition-all text-sm resize-none"></textarea>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="text-center pt-2">
+                            <button type="submit" id="submitBtn" data-i18n="formSubmitBtn" class="w-full sm:w-auto px-10 py-4 rounded-xl font-semibold bg-gradient-to-r from-brand-crimson via-brand-brightRed to-brand-darkRed text-white hover:opacity-90 transition-all duration-300 shadow-lg shadow-brand-crimson/40 hover:shadow-brand-crimson/70 active:scale-95 text-sm uppercase tracking-wider">
+                                Send Message
+                            </button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800/80 bg-brand-black/90 py-10 px-4 sm:px-6 relative z-10 text-xs text-slate-400">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex items-center gap-3">
+                <span class="font-display font-extrabold text-lg text-white">kdarkacy<span class="text-brand-crimson">.</span></span>
+                <span class="text-slate-600">|</span>
+                <span>&copy; <span id="year"></span> <span data-i18n="footerRights">All rights reserved.</span></span>
+            </div>
+
+            <div class="flex items-center space-x-6">
+                <button onclick="openPrivacyModal()" data-i18n="navPrivacy" class="hover:text-brand-brightRed transition-colors">Privacy Policy</button>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Cookie Consent Pop-Up -->
+    <div id="cookieBanner" class="fixed bottom-4 left-4 right-4 md:left-8 md:right-auto md:max-w-md z-50 transition-all duration-500 translate-y-32 opacity-0 pointer-events-none">
+        <div class="glass-card rounded-2xl p-5 border-brand-crimson/40 shadow-2xl relative overflow-hidden">
+            <div class="flex items-start gap-3">
+                <div class="text-2xl">🍪</div>
+                <div>
+                    <h4 data-i18n="cookieTitle" class="font-display font-bold text-white text-sm mb-1">Cookie Preferences</h4>
+                    <p data-i18n="cookieDesc" class="text-slate-300 text-xs leading-relaxed mb-4">
+                        We use cookies to make your experience smooth and analyze basic traffic. No weird tracking. Check our <button onclick="openPrivacyModal()" data-i18n="cookieLink" class="text-brand-brightRed underline">Privacy Policy</button> for details.
+                    </p>
+                    <div class="flex items-center gap-3">
+                        <button onclick="acceptCookies()" data-i18n="cookieAccept" class="px-4 py-2 rounded-lg bg-brand-crimson hover:bg-brand-brightRed text-white text-xs font-semibold transition-colors">
+                            Accept All
+                        </button>
+                        <button onclick="declineCookies()" data-i18n="cookieDecline" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold transition-colors">
+                            Decline
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Privacy Policy Modal -->
+    <div id="privacyModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="glass-card rounded-3xl max-w-2xl w-full max-h-[85vh] overflow-y-auto p-6 sm:p-8 border-brand-crimson/30 relative">
+            
+            <!-- Close Button -->
+            <button onclick="closePrivacyModal()" class="absolute top-5 right-5 text-slate-400 hover:text-white p-2">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+
+            <h3 data-i18n="privacyTitle" class="font-display text-2xl font-bold text-white mb-4">Privacy Policy</h3>
+            <p data-i18n="privacyUpdated" class="text-xs text-slate-400 mb-6">Last updated: September 2026</p>
+
+            <div class="space-y-4 text-xs sm:text-sm text-slate-300 leading-relaxed">
+                <p data-i18n="privacyIntro">
+                    Hey there! Welcome to <strong>kdarkacy</strong>. Your privacy matters to me, so I keep things super straightforward.
+                </p>
+                <h4 data-i18n="privacySec1Title" class="font-bold text-white text-base pt-2">1. Information Collected</h4>
+                <p data-i18n="privacySec1Text">
+                    When you use the "Reach Us" contact form on this website, the information you fill in (Name, Email, Subject, and Message) is sent strictly so I can read and reply to your inquiry. I do not sell or share your information with any third parties.
+                </p>
+                <h4 data-i18n="privacySec2Title" class="font-bold text-white text-base pt-2">2. Cookies</h4>
+                <p data-i18n="privacySec2Text">
+                    This site uses minimal local storage and cookies to remember whether you accepted or declined cookie preferences so you aren't asked repeatedly every time you visit.
+                </p>
+                <h4 data-i18n="privacySec3Title" class="font-bold text-white text-base pt-2">3. External Links</h4>
+                <p data-i18n="privacySec3Text">
+                    My website includes direct links to YouTube, Twitch, Instagram, TikTok, Twitter/X, and Patreon. Please note that clicking these links takes you to third-party platforms with their own privacy policies.
+                </p>
+                <h4 data-i18n="privacySec4Title" class="font-bold text-white text-base pt-2">4. Contacting Me</h4>
+                <p class="text-brand-brightRed font-medium">kdarkacy@outlook.com</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Interactive JavaScript & i18n Logic -->
+    <script>
+        const translations = {
+            en: {
+                navHome: "Home",
+                navAbout: "About",
+                navLinks: "Links",
+                navContact: "Contact",
+                navPrivacy: "Privacy Policy",
+                mobileLangLabel: "Language",
+                heroBadge: "Creating Content & Streaming",
+                heroGreeting: "Hey, I'm",
+                heroSubtitle: "Pressure and time",
+                ctaSocials: "Check My Socials",
+                ctaContact: "Get In Touch",
+                socialsTitle: "Stay Connected",
+                socialsSubtitle: "On all major platforms under @kdarkacy. Tap any card below to join!",
+                ytDesc: "Videos, highlights & long-form gaming content.",
+                ytAction: "Visit →",
+                twitchDesc: "Catch me live playing games & hanging out with chat.",
+                twitchAction: "Watch Live →",
+                instaDesc: "Photos, behind-the-scenes, and life updates.",
+                instaAction: "Follow →",
+                tiktokDesc: "Short clips, memes, and quick daily highlights.",
+                tiktokAction: "Watch Clips →",
+                twitterDesc: "Thoughts, updates, stream announcements & banter.",
+                twitterAction: "Read Tweets →",
+                patreonDesc: "Exclusive content, perks, and direct support.",
+                patreonAction: "Support →",
+                contactTitle: "Reach Us",
+                formNameLabel: "Your Name",
+                formNamePlaceholder: "Alex Mercer",
+                formEmailLabel: "Your Email",
+                formEmailPlaceholder: "alex@example.com",
+                formSubjectLabel: "Subject",
+                formSubjectPlaceholder: "Sponsorship / Collab",
+                formMessageLabel: "Message",
+                formMessagePlaceholder: "Hey kdarkacy...",
+                formSubmitBtn: "Send Message",
+                footerRights: "All rights reserved.",
+                cookieTitle: "Cookie Preferences",
+                cookieDesc: "We use cookies to make your experience smooth and analyze basic traffic. No weird tracking. Check our Privacy Policy for details.",
+                cookieLink: "Privacy Policy",
+                cookieAccept: "Accept All",
+                cookieDecline: "Decline",
+                privacyTitle: "Privacy Policy",
+                privacyUpdated: "Last updated: September 2026",
+                privacyIntro: "Hey there! Welcome to kdarkacy. Your privacy matters to me, so I keep things super straightforward.",
+                privacySec1Title: "1. Information Collected",
+                privacySec1Text: "When you use the \"Reach Us\" contact form on this website, the information you fill in (Name, Email, Subject, and Message) is sent strictly so I can read and reply to your inquiry. I do not sell or share your information with any third parties.",
+                privacySec2Title: "2. Cookies",
+                privacySec2Text: "This site uses minimal local storage and cookies to remember whether you accepted or declined cookie preferences so you aren't asked repeatedly every time you visit.",
+                privacySec3Title: "3. External Links",
+                privacySec3Text: "My website includes direct links to YouTube, Twitch, Instagram, TikTok, Twitter/X, and Patreon. Please note that clicking these links takes you to third-party platforms with their own privacy policies.",
+                privacySec4Title: "4. Contacting Me"
+            },
+            de: {
+                navHome: "Startseite",
+                navAbout: "Über mich",
+                navLinks: "Links",
+                navContact: "Kontakt",
+                navPrivacy: "Datenschutz",
+                mobileLangLabel: "Sprache",
+                heroBadge: "Content-Erstellung & Streaming",
+                heroGreeting: "Hey, ich bin",
+                heroSubtitle: "Druck und Zeit",
+                ctaSocials: "Socials ansehen",
+                ctaContact: "Kontakt aufnehmen",
+                socialsTitle: "Bleib in Verbindung",
+                socialsSubtitle: "Auf allen Plattformen unter @kdarkacy. Tippe auf eine Karte, um dabei zu sein!",
+                ytDesc: "Videos, Highlights & Gaming Content.",
+                ytAction: "Besuchen →",
+                twitchDesc: "Schau mir live beim Zocken zu und chatte mit mir.",
+                twitchAction: "Live zuschauen →",
+                instaDesc: "Fotos, Einblicke hinter die Kulissen und Updates.",
+                instaAction: "Folgen →",
+                tiktokDesc: "Kurze Clips, Memes und tägliche Highlights.",
+                tiktokAction: "Clips ansehen →",
+                twitterDesc: "Gedanken, Updates, Stream-Ankündigungen & Banter.",
+                twitterAction: "Tweets lesen →",
+                patreonDesc: "Exklusiver Content, Perks und Unterstützung.",
+                patreonAction: "Unterstützen →",
+                contactTitle: "Kontaktieren Sie uns",
+                formNameLabel: "Ihr Name",
+                formNamePlaceholder: "Alex Mercer",
+                formEmailLabel: "Ihre E-Mail",
+                formEmailPlaceholder: "alex@beispiel.de",
+                formSubjectLabel: "Betreff",
+                formSubjectPlaceholder: "Sponsoring / Kooperation",
+                formMessageLabel: "Nachricht",
+                formMessagePlaceholder: "Hey kdarkacy...",
+                formSubmitBtn: "Nachricht senden",
+                footerRights: "Alle Rechte vorbehalten.",
+                cookieTitle: "Cookie-Einstellungen",
+                cookieDesc: "Wir verwenden Cookies, um Ihre Erfahrung zu verbessern und den Traffic zu analysieren. Kein Tracking. Details in der Datenschutzerklärung.",
+                cookieLink: "Datenschutzerklärung",
+                cookieAccept: "Alle akzeptieren",
+                cookieDecline: "Ablehnen",
+                privacyTitle: "Datenschutzrichtlinie",
+                privacyUpdated: "Zuletzt aktualisiert: September 2026",
+                privacyIntro: "Hallo! Willkommen bei kdarkacy. Ihre Privatsphäre ist mir wichtig, daher halte ich alles sehr einfach.",
+                privacySec1Title: "1. Gesammelte Informationen",
+                privacySec1Text: "Wenn Sie das Kontaktformular nutzen, werden die eingegebenen Daten ausschließlich gesendet, damit ich Ihre Anfrage beantworten kann. Ich teile Ihre Daten nicht.",
+                privacySec2Title: "2. Cookies",
+                privacySec2Text: "Diese Website verwendet lokalen Speicher und Cookies, um Ihre Cookie-Einstellungen zu speichern.",
+                privacySec3Title: "3. Externe Links",
+                privacySec3Text: "Meine Website enthält direkte Links zu externen Plattformen mit eigenen Datenschutzrichtlinien.",
+                privacySec4Title: "4. Kontaktaufnahme"
+            },
+            lt: {
+                navHome: "Pagrindinis",
+                navAbout: "Apie mane",
+                navLinks: "Nuorodos",
+                navContact: "Kontaktai",
+                navPrivacy: "Privatumo politika",
+                mobileLangLabel: "Kalba",
+                heroBadge: "Turinio kūrimas ir transliacijos",
+                heroGreeting: "Labas, aš esu",
+                heroSubtitle: "Spaudimas ir laikas",
+                ctaSocials: "Mano tinklai",
+                ctaContact: "Susisiekite",
+                socialsTitle: "Būkime ryšyje",
+                socialsSubtitle: "Visose pagrindinėse platformose @kdarkacy. Paspauskite kortelę, kad prisijungtumėte!",
+                ytDesc: "Vaizdo įrašai, geriausi momentai ir žaidimų turinys.",
+                ytAction: "Apsilankyti →",
+                twitchDesc: "Žiūrėkite tiesiogines transliacijas ir bendraukite čate.",
+                twitchAction: "Žiūrėti gyvai →",
+                instaDesc: "Nuotraukos, užkulisiai ir gyvenimo naujienos.",
+                instaAction: "Sekti →",
+                tiktokDesc: "Trumpieji vaizdo įrašai, memai ir dienos akimirkos.",
+                tiktokAction: "Žiūrėti klipus →",
+                twitterDesc: "Mintys, atnaujinimai, transliacijų pranešimai ir pastebėjimai.",
+                twitterAction: "Skaityti X →",
+                patreonDesc: "Išskirtinis turinys, premijos ir tiesioginis palaikymas.",
+                patreonAction: "Palaikyti →",
+                contactTitle: "Susisiekite su mumis",
+                formNameLabel: "Jūsų vardas",
+                formNamePlaceholder: "Alex Mercer",
+                formEmailLabel: "Jūsų el. paštas",
+                formEmailPlaceholder: "alex@pavyzdys.lt",
+                formSubjectLabel: "Tema",
+                formSubjectPlaceholder: "Rėmimas / Bendradarbiavimas",
+                formMessageLabel: "Žinutė",
+                formMessagePlaceholder: "Labas kdarkacy...",
+                formSubmitBtn: "Siųsti žinutę",
+                footerRights: "Visos teisės saugomos.",
+                cookieTitle: "Slapukų nustatymai",
+                cookieDesc: "Naudojame slapukus sklandžiai patirčiai užtikrinti ir srautui analizuoti. Jokių keistų sekimų. Daugiau informacijos Privatumo politikoje.",
+                cookieLink: "Privatumo politika",
+                cookieAccept: "Sutikti su visais",
+                cookieDecline: "Atmesti",
+                privacyTitle: "Privatumo politika",
+                privacyUpdated: "Paskutinį kartą atnaujinta: 2026 m. rugsėjis",
+                privacyIntro: "Sveiki! Sveiki atvykę į kdarkacy. Jūsų privatumas man svarbus, todėl viskas pateikta aiškiai ir paprastai.",
+                privacySec1Title: "1. Renkama informacija",
+                privacySec1Text: "Kai naudojatės kontaktine forma, įvesti duomenys naudojami tik tam, kad galėčiau atsakyti į jūsų užklausą. Duomenys neparduodami.",
+                privacySec2Title: "2. Slapukai",
+                privacySec2Text: "Svetainėje naudojama vietinė atmintis ir slapukai, kad būtų įsiminti jūsų nustatymai.",
+                privacySec3Title: "3. Išorinės nuorodos",
+                privacySec3Text: "Mano svetainėje yra tiesioginės nuorodos į trečiųjų šalių platformas su jų pačių privatumo politikomis.",
+                privacySec4Title: "4. Kontaktai"
+            },
+            ru: {
+                navHome: "Главная",
+                navAbout: "Обо мне",
+                navLinks: "Ссылки",
+                navContact: "Контакты",
+                navPrivacy: "Конфиденциальность",
+                mobileLangLabel: "Язык",
+                heroBadge: "Создание контента и стримы",
+                heroGreeting: "Привет, я",
+                heroSubtitle: "Давление и время",
+                ctaSocials: "Мои соцсети",
+                ctaContact: "Связаться",
+                socialsTitle: "Оставайтесь на связи",
+                socialsSubtitle: "На всех платформах под ником @kdarkacy. Нажмите на карту, чтобы перейти!",
+                ytDesc: "Видео, хайлайты и игровой контент.",
+                ytAction: "Перейти →",
+                twitchDesc: "Смотрите стримы и общайтесь в чате.",
+                twitchAction: "Смотреть стрим →",
+                instaDesc: "Фотографии, закулисье и новости.",
+                instaAction: "Подписаться →",
+                tiktokDesc: "Короткие клипы, мемы и ежедневные моменты.",
+                tiktokAction: "Смотреть клипы →",
+                twitterDesc: "Мысли, обновления, анонсы стримов и общение.",
+                twitterAction: "Читать Твиты →",
+                patreonDesc: "Эксклюзивный контент, бонусы и поддержка.",
+                patreonAction: "Поддержать →",
+                contactTitle: "Связаться с нами",
+                formNameLabel: "Ваше имя",
+                formNamePlaceholder: "Алекс Мерсер",
+                formEmailLabel: "Ваш Email",
+                formEmailPlaceholder: "alex@example.com",
+                formSubjectLabel: "Тема",
+                formSubjectPlaceholder: "Спонсорство / Коллаборация",
+                formMessageLabel: "Сообщение",
+                formMessagePlaceholder: "Привет kdarkacy...",
+                formSubmitBtn: "Отправить сообщение",
+                footerRights: "Все права защищены.",
+                cookieTitle: "Настройки Cookie",
+                cookieDesc: "Мы используем cookie для улучшения работы сайта и анализа трафика. Без скрытого слежения. Подробнее в Политике конфиденциальности.",
+                cookieLink: "Политика конфиденциальности",
+                cookieAccept: "Принять все",
+                cookieDecline: "Отклонить",
+                privacyTitle: "Политика конфиденциальности",
+                privacyUpdated: "Последнее обновление: Сентябрь 2026",
+                privacyIntro: "Привет! Добро пожаловать на kdarkacy. Ваша конфиденциальность важна для меня, поэтому всё предельно просто.",
+                privacySec1Title: "1. Сбор информации",
+                privacySec1Text: "Когда вы используете форму обратной связи, данные используются исключительно для ответа на ваше обращение.",
+                privacySec2Title: "2. Файлы Cookie",
+                privacySec2Text: "Этот сайт использует локальное хранилище и cookie для запоминания ваших настроек.",
+                privacySec3Title: "3. Внешние ссылки",
+                privacySec3Text: "На сайте есть ссылки на внешние платформы с их собственными политиками конфиденциальности.",
+                privacySec4Title: "4. Контактная информация"
+            }
+        };
+
+        function changeLanguage(lang) {
+            if (!translations[lang]) return;
+            localStorage.setItem('kdarkacy_lang', lang);
+            document.documentElement.lang = lang;
+
+            // Sync dropdowns
+            const langSelect = document.getElementById('langSelect');
+            const mobileLangSelect = document.getElementById('mobileLangSelect');
+            if (langSelect) langSelect.value = lang;
+            if (mobileLangSelect) mobileLangSelect.value = lang;
+
+            // Update text elements
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[lang][key]) {
+                    el.textContent = translations[lang][key];
+                }
+            });
+
+            // Update placeholders
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                if (translations[lang][key]) {
+                    el.placeholder = translations[lang][key];
+                }
+            });
+        }
+
+        // Initialize Year in Footer
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        const canvas = document.getElementById('particleCanvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Particle {
+            constructor() {
+                this.reset();
+            }
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = (Math.random() - 0.5) * 0.5;
+                this.radius = Math.random() * 1.5 + 0.5;
+                this.alpha = Math.random() * 0.5 + 0.2;
+            }
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) {
+                    this.reset();
+                }
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255, 26, 64, ${this.alpha})`;
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            const count = Math.min(Math.floor((canvas.width * canvas.height) / 16000), 70);
+            for (let i = 0; i < count; i++) {
+                particles.push(new Particle());
+            }
+        }
+        initParticles();
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < 110) {
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.strokeStyle = `rgba(134, 22, 27, ${0.25 * (1 - dist / 110)})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+        // Mobile Menu Logic
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+
+        function toggleMobileMenu() {
+            mobileMenu.classList.toggle('hidden');
+        }
+
+        function closeMobileMenu() {
+            mobileMenu.classList.add('hidden');
+        }
+
+        if (mobileMenuBtn) {
+            mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+        }
+
+        document.querySelectorAll('.mobile-nav-link').forEach(link => {
+            link.addEventListener('click', closeMobileMenu);
+        });
+
+        // Contact Form Submission Handler
+        function handleFormSubmit(event) {
+            event.preventDefault();
+            const submitBtn = document.getElementById('submitBtn');
+            const currentLang = localStorage.getItem('kdarkacy_lang') || 'en';
+            
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = currentLang === 'lt' ? 'Siunčiama...' : currentLang === 'de' ? 'Wird gesendet...' : currentLang === 'ru' ? 'Отправка...' : 'Sending...';
+            submitBtn.disabled = true;
+
+            setTimeout(() => {
+                submitBtn.textContent = currentLang === 'lt' ? 'Išsiųsta! ✓' : currentLang === 'de' ? 'Gesendet! ✓' : currentLang === 'ru' ? 'Отправлено! ✓' : 'Message Sent! ✓';
+                document.getElementById('contactForm').reset();
+                setTimeout(() => {
+                    submitBtn.textContent = originalText;
+                    submitBtn.disabled = false;
+                }, 3000);
+            }, 1000);
+        }
+
+        // Cookie Banner Logic
+        function showCookieBanner() {
+            const consent = localStorage.getItem('kdarkacy_cookie_consent');
+            if (!consent) {
+                setTimeout(() => {
+                    const banner = document.getElementById('cookieBanner');
+                    if (banner) {
+                        banner.classList.remove('translate-y-32', 'opacity-0', 'pointer-events-none');
+                    }
+                }, 1000);
+            }
+        }
+
+        function acceptCookies() {
+            localStorage.setItem('kdarkacy_cookie_consent', 'accepted');
+            hideCookieBanner();
+        }
+
+        function declineCookies() {
+            localStorage.setItem('kdarkacy_cookie_consent', 'declined');
+            hideCookieBanner();
+        }
+
+        function hideCookieBanner() {
+            const banner = document.getElementById('cookieBanner');
+            if (banner) {
+                banner.classList.add('translate-y-32', 'opacity-0', 'pointer-events-none');
+            }
+        }
+
+        // Privacy Modal Logic
+        function openPrivacyModal() {
+            const modal = document.getElementById('privacyModal');
+            if (modal) {
+                modal.classList.remove('opacity-0', 'pointer-events-none');
+            }
+        }
+
+        function closePrivacyModal() {
+            const modal = document.getElementById('privacyModal');
+            if (modal) {
+                modal.classList.add('opacity-0', 'pointer-events-none');
+            }
+        }
+
+        // On Page Load Initialization
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedLang = localStorage.getItem('kdarkacy_lang') || 'en';
+            changeLanguage(savedLang);
+            showCookieBanner();
+        });
+    </script>
+</body>
+</html>

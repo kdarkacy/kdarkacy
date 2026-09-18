@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>kdarkacy</title>
+    <!-- Favicon setting -->
+    <link rel="icon" type="image/png" href="kdarkacy.png">
+    
+    <!-- Fonts: Inter & Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            black: '#070709',
+                            card: '#111116',
+                            border: '#261219',
+                            crimson: '#86161b',
+                            brightRed: '#86161b',
+                            darkRed: '#990022',
+                            glow: 'rgba(134, 22, 27, 0.4)'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Outfit', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Custom CSS Animations & Styles -->
+    <style>
+        body {
+            background-color: #070709;
+            color: #e5e7eb;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Glassmorphism utility */
+        .glass-card {
+            background: rgba(17, 17, 22, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 26, 64, 0.15);
+        }
+
+        .glass-card:hover {
+            border-color: rgba(255, 26, 64, 0.4);
+            box-shadow: 0 10px 30px -10px rgba(255, 26, 64, 0.25);
+        }
+
+        .glass-nav {
+            background: rgba(7, 7, 9, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 26, 64, 0.12);
+        }
+
+        /* Glowing text effect */
+        .text-glow {
+            text-shadow: 0 0 15px rgba(255, 26, 64, 0.6), 0 0 30px rgba(255, 26, 64, 0.3);
+        }
+
+        .box-glow {
+            box-shadow: 0 0 25px rgba(255, 26, 64, 0.35);
+        }
+
+        /* Keyframe animations for avatar glowing ring */
+        @keyframes spinSlow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes spinReverse {
+            from { transform: rotate(360deg); }
+            to { transform: rotate(0deg); }
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 0.8;
+                box-shadow: 0 0 25px rgba(255, 26, 64, 0.5);
+            }
+            50% {
+                transform: scale(1.05);
+                opacity: 1;
+                box-shadow: 0 0 45px rgba(255, 26, 64, 0.85);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .animate-spin-slow {
+            animation: spinSlow 15s linear infinite;
+        }
+
+        .animate-spin-reverse {
+            animation: spinReverse 22s linear infinite;
+        }
+
+        .animate-pulse-glow {
+            animation: pulseGlow 4s ease-in-out infinite;
+        }
+
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #070709;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #330a13;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #ff1a40;
+        }
+    </style>
+</head>
+<body class="relative min-h-screen text-slate-100 selection:bg-brand-crimson selection:text-white">
+
+    <!-- Particle Background Canvas -->
+    <canvas id="particleCanvas" class="fixed inset-0 pointer-events-none z-0"></canvas>
+
+    <!-- Navigation Header -->
+    <header class="fixed top-0 left-0 right-0 z-50 glass-nav transition-all duration-300">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Brand Logo -->
+            <a href="#home" class="flex items-center gap-3 group">
+                <div class="w-10 h-10 rounded-full border border-brand-crimson/50 flex items-center justify-center bg-brand-card overflow-hidden group-hover:border-brand-crimson transition-colors">
+                    <img src="kdarkacy.png" alt="kdarkacy logo" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://placehold.co/100x100/111116/ff1a40?text=KD';">
+                </div>
+                <span class="font-display font-extrabold text-2xl tracking-wider text-white group-hover:text-brand-crimson transition-colors">
+                    kdarkacy<span class="text-brand-crimson">.</span>
+                </span>
+            </a>
+
+            <!-- Desktop Nav Links -->
+            <nav class="hidden md:flex items-center space-x-8 text-sm font-medium">
+                <a href="#home" class="text-slate-300 hover:text-brand-crimson transition-colors">Home</a>
+                <a href="#about" class="text-slate-300 hover:text-brand-crimson transition-colors">About</a>
+                <a href="#socials" class="text-slate-300 hover:text-brand-crimson transition-colors">Links</a>
+                <a href="#contact" class="text-slate-300 hover:text-brand-crimson transition-colors">Contact</a>
+                <button onclick="openPrivacyModal()" class="text-slate-400 hover:text-brand-crimson transition-colors text-xs uppercase tracking-wider">Privacy Policy</button>
+            </nav>
+
+            <!-- Mobile Menu Toggle Button -->
+            <button id="mobileMenuBtn" aria-label="Toggle Navigation Menu" class="md:hidden p-2 text-slate-300 hover:text-white focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path id="menuIcon" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Mobile Nav Menu -->
+        <div id="mobileMenu" class="hidden md:hidden glass-nav border-b border-brand-crimson/20 px-4 pt-2 pb-6 space-y-3">
+            <a href="#home" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-slate-200 hover:bg-brand-crimson/10 hover:text-brand-crimson">Home</a>
+            <a href="#about" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-slate-200 hover:bg-brand-crimson/10 hover:text-brand-crimson">About</a>
+            <a href="#socials" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-slate-200 hover:bg-brand-crimson/10 hover:text-brand-crimson">Links</a>
+            <a href="#contact" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-slate-200 hover:bg-brand-crimson/10 hover:text-brand-crimson">Contact</a>
+            <button onclick="openPrivacyModal(); closeMobileMenu();" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-slate-400 hover:text-brand-crimson">Privacy Policy</button>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="relative z-10 pt-20">
+
+        <!-- Hero Section -->
+        <section id="home" class="min-h-[90vh] flex items-center justify-center py-16 px-4 sm:px-6">
+            <div class="max-w-4xl mx-auto text-center flex flex-col items-center">
+                
+                <!-- Status Badge -->
+                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass-card border-brand-crimson/30 text-xs font-semibold tracking-wide text-slate-300 mb-10 animate-float">
+                    <span class="w-2.5 h-2.5 rounded-full bg-brand-crimson animate-ping"></span>
+                    <span class="text-brand-brightRed font-medium">Creating Content & Streaming</span>
+                </div>
+
+                <!-- Animated Profile Picture Container -->
+                <div class="relative w-56 h-56 sm:w-64 sm:h-64 mb-10 flex items-center justify-center">
+                    
+                    <!-- Outer Rotating Gradient Ring 1 -->
+                    <div class="absolute inset-0 rounded-full border-2 border-dashed border-brand-crimson/60 animate-spin-slow"></div>
+                    
+                    <!-- Outer Rotating Reverse Ring 2 -->
+                    <div class="absolute -inset-3 rounded-full border border-brand-brightRed/40 border-t-brand-crimson animate-spin-reverse"></div>
+                    
+                    <!-- Pulsing Glow Ring 3 -->
+                    <div class="absolute -inset-1 rounded-full bg-gradient-to-tr from-brand-darkRed via-brand-crimson to-transparent opacity-70 blur-md animate-pulse-glow"></div>
+
+                    <!-- Inner Avatar Container -->
+                    <div class="relative w-48 h-48 sm:w-56 sm:h-56 rounded-full p-1 bg-gradient-to-b from-brand-crimson via-brand-card to-brand-black shadow-2xl overflow-hidden z-10">
+                        <img 
+                            src="kdarkacy.png" 
+                            alt="kdarkacy Profile Picture" 
+                            class="w-full h-full object-cover rounded-full transition-transform duration-500 hover:scale-105"
+                            onerror="this.onerror=null; this.src='https://placehold.co/400x400/111116/ff1a40?text=kdarkacy';"
+                        />
+                    </div>
+
+                    <!-- Ambient Floating Glow Orb Behind -->
+                    <div class="absolute w-full h-full rounded-full bg-brand-crimson/20 blur-2xl -z-10"></div>
+                </div>
+
+                <!-- Conversational Hero Headings -->
+                <h1 class="font-display text-4xl sm:text-6xl font-black tracking-tight text-white mb-4">
+                    Hey, I'm <span class="text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-100 to-brand-brightRed text-glow">kdarkacy</span> 👋
+                </h1>
+                
+                <p class="text-lg sm:text-xl text-slate-300 max-w-2xl font-light leading-relaxed mb-8">
+                     Pressure and time
+                </p>
+
+                <!-- Call To Action Buttons -->
+                <div class="flex flex-wrap items-center justify-center gap-4">
+                    <a href="#socials" class="px-8 py-3.5 rounded-xl font-semibold bg-gradient-to-r from-brand-crimson to-brand-darkRed text-white hover:from-brand-brightRed hover:to-brand-crimson transition-all duration-300 shadow-lg shadow-brand-crimson/30 hover:shadow-brand-crimson/60 hover:-translate-y-0.5">
+                        Check My Socials
+                    </a>
+                    <a href="#contact" class="px-8 py-3.5 rounded-xl font-semibold glass-card text-slate-200 hover:text-white hover:bg-brand-crimson/10 transition-all duration-300 hover:-translate-y-0.5">
+                        Get In Touch
+                    </a>
+                </div>
+
+            </div>
+        </section>
+        <!-- Social Links Section -->
+        <section id="socials" class="py-20 px-4 sm:px-6">
+            <div class="max-w-5xl mx-auto">
+                <div class="text-center mb-14">
+                    <h2 class="font-display text-3xl sm:text-4xl font-extrabold text-white mb-3">
+                        Stay Connected
+                    </h2>
+                    <p class="text-slate-400 max-w-lg mx-auto text-sm sm:text-base">
+                        On all major platforms under <span class="text-brand-brightRed font-semibold">@kdarkacy</span>. Tap any card below to join!
+                    </p>
+                </div>
+
+                <!-- Cards Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+                    <!-- YouTube -->
+                    <a href="https://youtube.com/@kdarkacy" target="_blank" rel="noopener noreferrer" class="glass-card rounded-2xl p-6 flex flex-col justify-between group transition-all duration-300 hover:-translate-y-1">
+                        <div>
+                            <div class="w-12 h-12 rounded-xl bg-red-600/10 border border-red-500/20 flex items-center justify-center text-red-500 mb-5 group-hover:scale-110 group-hover:bg-red-600 group-hover:text-white transition-all">
+                                <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24">
+                                    <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                                </svg>
+                            </div>
+                            <h3 class="font-display text-xl font-bold text-white mb-1">YouTube</h3>
+                            <p class="text-slate-400 text-xs mb-4">Videos, highlights & long-form gaming content.</p>
+                        </div>
+                        <div class="flex items-center justify-between text-xs font-semibold text-brand-brightRed group-hover:text-white transition-colors">
+                            <span>@kdarkacy</span>
+                            <span class="group-hover:translate-x-1 transition-transform">Visit &rarr;</span>
+                        </div>
+                    </a>
+
+                    <!-- Twitch -->
+                    <a href="https://twitch.tv/kdarkacy" target="_blank" rel="noopener noreferrer" class="glass-card rounded-2xl p-6 flex flex-col justify-between group transition-all duration-300 hover:-translate-y-1">
+                        <div>
+                            <div class="w-12 h-12 rounded-xl bg-purple-600/10 border border-purple-500/20 flex items-center justify-center text-purple-400 mb-5 group-hover:scale-110 group-hover:bg-purple-600 group-hover:text-white transition-all">
+                                <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24">
+                                    <path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714z"/>
+                                </svg>
+                            </div>
+                            <h3 class="font-display text-xl font-bold text-white mb-1">Twitch</h3>
+                            <p class="text-slate-400 text-xs mb-4">Catch me live playing games & hanging out with chat.</p>
+                        </div>
+                        <div class="flex items-center justify-between text-xs font-semibold text-brand-brightRed group-hover:text-white transition-colors">
+                            <span>@kdarkacy</span>
+                            <span class="group-hover:translate-x-1 transition-transform">Watch Live &rarr;</span>
+                        </div>
+                    </a>
+
+                    <!-- Instagram -->
+                    <a href="https://instagram.com/kdarkacy" target="_blank" rel="noopener noreferrer" class="glass-card rounded-2xl p-6 flex flex-col justify-between group transition-all duration-300 hover:-translate-y-1">
+                        <div>
+                            <div class="w-12 h-12 rounded-xl bg-pink-600/10 border border-pink-500/20 flex items-center justify-center text-pink-500 mb-5 group-hover:scale-110 group-hover:bg-gradient-to-tr group-hover:from-amber-500 group-hover:via-pink-600 group-hover:to-purple-600 group-hover:text-white transition-all">
+                                <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24">
+                                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                                </svg>
+                            </div>
+                            <h3 class="font-display text-xl font-bold text-white mb-1">Instagram</h3>
+                            <p class="text-slate-400 text-xs mb-4">Photos, behind-the-scenes, and life updates.</p>
+                        </div>
+                        <div class="flex items-center justify-between text-xs font-semibold text-brand-brightRed group-hover:text-white transition-colors">
+                            <span>@kdarkacy</span>
+                            <span class="group-hover:translate-x-1 transition-transform">Follow &rarr;</span>
+                        </div>
+                    </a>
+
+                    <!-- TikTok -->
+                    <a href="https://tiktok.com/@kdarkacy" target="_blank" rel="noopener noreferrer" class="glass-card rounded-2xl p-6 flex flex-col justify-between group transition-all duration-300 hover:-translate-y-1">
+                        <div>
+                            <div class="w-12 h-12 rounded-xl bg-cyan-600/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 mb-5 group-hover:scale-110 group-hover:bg-cyan-500 group-hover:text-black transition-all">
+                                <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24">
+                                    <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.67 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.82.56-1.31 1.52-1.33 2.52-.02 1.25.72 2.45 1.83 2.97.97.47 2.14.42 3.06-.11.83-.47 1.39-1.33 1.49-2.28.08-2.28.02-4.57.04-6.85.01-3.34.01-6.68.01-10.02z"/>
+                                </svg>
+                            </div>
+                            <h3 class="font-display text-xl font-bold text-white mb-1">TikTok</h3>
+                            <p class="text-slate-400 text-xs mb-4">Short clips, memes, and quick daily highlights.</p>
+                        </div>
+                        <div class="flex items-center justify-between text-xs font-semibold text-brand-brightRed group-hover:text-white transition-colors">
+                            <span>@kdarkacy</span>
+                            <span class="group-hover:translate-x-1 transition-transform">Watch Clips &rarr;</span>
+                        </div>
+                    </a>
+
+                    <!-- Twitter / X -->
+                    <a href="https://twitter.com/kdarkacy" target="_blank" rel="noopener noreferrer" class="glass-card rounded-2xl p-6 flex flex-col justify-between group transition-all duration-300 hover:-translate-y-1">
+                        <div>
+                            <div class="w-12 h-12 rounded-xl bg-slate-700/20 border border-slate-600/30 flex items-center justify-center text-slate-200 mb-5 group-hover:scale-110 group-hover:bg-slate-200 group-hover:text-black transition-all">
+                                <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                                </svg>
+                            </div>
+                            <h3 class="font-display text-xl font-bold text-white mb-1">Twitter / X</h3>
+                            <p class="text-slate-400 text-xs mb-4">Thoughts, updates, stream announcements & banter.</p>
+                        </div>
+                        <div class="flex items-center justify-between text-xs font-semibold text-brand-brightRed group-hover:text-white transition-colors">
+                            <span>@kdarkacy</span>
+                            <span class="group-hover:translate-x-1 transition-transform">Read Tweets &rarr;</span>
+                        </div>
+                    </a>
+
+                    <!-- Patreon -->
+                    <a href="https://patreon.com/kdarkacy" target="_blank" rel="noopener noreferrer" class="glass-card rounded-2xl p-6 flex flex-col justify-between group transition-all duration-300 hover:-translate-y-1">
+                        <div>
+                            <div class="w-12 h-12 rounded-xl bg-orange-600/10 border border-orange-500/20 flex items-center justify-center text-orange-400 mb-5 group-hover:scale-110 group-hover:bg-orange-500 group-hover:text-white transition-all">
+                                <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24">
+                                    <path d="M15.386.524c-4.764 0-8.64 3.876-8.64 8.64 0 4.75 3.876 8.613 8.64 8.613 4.75 0 8.614-3.864 8.614-8.613C24 4.4 20.136.524 15.386.524M.003 23.537h4.22V.524H.003"/>
+                                </svg>
+                            </div>
+                            <h3 class="font-display text-xl font-bold text-white mb-1">Patreon</h3>
+                            <p class="text-slate-400 text-xs mb-4">Exclusive content, perks, and direct support.</p>
+                        </div>
+                        <div class="flex items-center justify-between text-xs font-semibold text-brand-brightRed group-hover:text-white transition-colors">
+                            <span>@kdarkacy</span>
+                            <span class="group-hover:translate-x-1 transition-transform">Support &rarr;</span>
+                        </div>
+                    </a>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Reach Us / Contact Section -->
+        <section id="contact" class="py-20 px-4 sm:px-6 relative">
+            <div class="max-w-4xl mx-auto">
+                <div class="glass-card rounded-3xl p-8 sm:p-12 relative overflow-hidden">
+                    
+                    <div class="text-center max-w-xl mx-auto mb-10">
+                        <h2 class="font-display text-3xl sm:text-4xl font-extrabold text-white mb-3">
+                            Reach Us
+                        </h2>
+                        <p class="text-slate-300 text-sm sm:text-base leading-relaxed">                        </p>
+                    </div>
+
+                    <!-- Contact Form -->
+                    <form id="contactForm" onsubmit="handleFormSubmit(event)" class="space-y-6">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                            <!-- Name -->
+                            <div>
+                                <label for="name" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Your Name</label>
+                                <input type="text" id="name" required placeholder="Alex Mercer" class="w-full px-4 py-3 rounded-xl bg-black/50 border border-slate-800 text-white placeholder-slate-500 focus:outline-none focus:border-brand-crimson focus:ring-1 focus:ring-brand-crimson transition-all text-sm">
+                            </div>
+
+                            <!-- Email -->
+                            <div>
+                                <label for="email" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Your Email</label>
+                                <input type="email" id="email" required placeholder="alex@example.com" class="w-full px-4 py-3 rounded-xl bg-black/50 border border-slate-800 text-white placeholder-slate-500 focus:outline-none focus:border-brand-crimson focus:ring-1 focus:ring-brand-crimson transition-all text-sm">
+                            </div>
+                        </div>
+
+                        <!-- Subject -->
+                        <div>
+                            <label for="subject" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Subject</label>
+                            <input type="text" id="subject" required placeholder="Sponsorship / Collab" class="w-full px-4 py-3 rounded-xl bg-black/50 border border-slate-800 text-white placeholder-slate-500 focus:outline-none focus:border-brand-crimson focus:ring-1 focus:ring-brand-crimson transition-all text-sm">
+                        </div>
+
+                        <!-- Message -->
+                        <div>
+                            <label for="message" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Message</label>
+                            <textarea id="message" rows="5" required placeholder="Hey kdarkacy..." class="w-full px-4 py-3 rounded-xl bg-black/50 border border-slate-800 text-white placeholder-slate-500 focus:outline-none focus:border-brand-crimson focus:ring-1 focus:ring-brand-crimson transition-all text-sm resize-none"></textarea>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="text-center pt-2">
+                            <button type="submit" id="submitBtn" class="w-full sm:w-auto px-10 py-4 rounded-xl font-semibold bg-gradient-to-r from-brand-crimson via-brand-brightRed to-brand-darkRed text-white hover:opacity-90 transition-all duration-300 shadow-lg shadow-brand-crimson/40 hover:shadow-brand-crimson/70 active:scale-95 text-sm uppercase tracking-wider">
+                                Send Message
+                            </button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800/80 bg-brand-black/90 py-10 px-4 sm:px-6 relative z-10 text-xs text-slate-400">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex items-center gap-3">
+                <span class="font-display font-extrabold text-lg text-white">kdarkacy<span class="text-brand-crimson">.</span></span>
+                <span class="text-slate-600">|</span>
+                <span>&copy; <span id="year"></span> All rights reserved.</span>
+            </div>
+
+            <div class="flex items-center space-x-6">
+                <button onclick="openPrivacyModal()" class="hover:text-brand-brightRed transition-colors">Privacy Policy</button>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Cookie Consent Pop-Up -->
+    <div id="cookieBanner" class="fixed bottom-4 left-4 right-4 md:left-8 md:right-auto md:max-w-md z-50 transition-all duration-500 translate-y-32 opacity-0 pointer-events-none">
+        <div class="glass-card rounded-2xl p-5 border-brand-crimson/40 shadow-2xl relative overflow-hidden">
+            <div class="flex items-start gap-3">
+                <div class="text-2xl">🍪</div>
+                <div>
+                    <h4 class="font-display font-bold text-white text-sm mb-1">Cookie Preferences</h4>
+                    <p class="text-slate-300 text-xs leading-relaxed mb-4">
+                        We use cookies to make your experience smooth and analyze basic traffic. No weird tracking. Check our <button onclick="openPrivacyModal()" class="text-brand-brightRed underline">Privacy Policy</button> for details.
+                    </p>
+                    <div class="flex items-center gap-3">
+                        <button onclick="acceptCookies()" class="px-4 py-2 rounded-lg bg-brand-crimson hover:bg-brand-brightRed text-white text-xs font-semibold transition-colors">
+                            Accept All
+                        </button>
+                        <button onclick="declineCookies()" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold transition-colors">
+                            Decline
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Privacy Policy Modal -->
+    <div id="privacyModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="glass-card rounded-3xl max-w-2xl w-full max-h-[85vh] overflow-y-auto p-6 sm:p-8 border-brand-crimson/30 relative">
+            
+            <!-- Close Button -->
+            <button onclick="closePrivacyModal()" class="absolute top-5 right-5 text-slate-400 hover:text-white p-2">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+
+            <h3 class="font-display text-2xl font-bold text-white mb-4">Privacy Policy</h3>
+            <p class="text-xs text-slate-400 mb-6">Last updated: September 2026</p>
+
+            <div class="space-y-4 text-xs sm:text-sm text-slate-300 leading-relaxed">
+                <p>
+                    Hey there! Welcome to <strong>kdarkacy</strong>. Your privacy matters to me, so I keep things super straightforward.
+                </p>
+                <h4 class="font-bold text-white text-base pt-2">1. Information Collected</h4>
+                <p>
+                    When you use the "Reach Us" contact form on this website, the information you fill in (Name, Email, Subject, and Message) is sent strictly so I can read and reply to your inquiry. I do not sell or share your information with any third parties.
+                </p>
+                <h4 class="font-bold text-white text-base pt-2">2. Cookies</h4>
+                <p>
+                    This site uses minimal local storage and cookies to remember whether you accepted or declined cookie preferences so you aren't asked repeatedly every time you visit.
+                </p>
+                <h4 class="font-bold text-white text-base pt-2">3. External Links</h4>
+                <p>
+                    My website includes direct links to YouTube, Twitch, Instagram, TikTok, Twitter/X, and Patreon. Please note that clicking these links takes you to third-party platforms with their own privacy policies.
+                </p>
+                <h4 class="font-bold text-white text-base pt-2">4. Contacting Me</h4>
+                    kdarkacy@outlook.com
+                <p>
+            </div>
+
+            <div class="mt-8 text-right">
+                <button onclick="closePrivacyModal()" class="px-6 py-2.5 rounded-xl bg-brand-crimson text-white font-semibold text-xs hover:bg-brand-brightRed transition-colors">
+                    Got it
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Submission Success Toast Modal -->
+    <div id="successModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="glass-card rounded-3xl max-w-sm w-full p-6 text-center border-brand-crimson/40">
+            <div class="w-16 h-16 rounded-full bg-brand-crimson/20 border border-brand-crimson flex items-center justify-center mx-auto mb-4 text-brand-brightRed">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                </svg>
+            </div>
+            <h3 class="font-display text-xl font-bold text-white mb-2">Message Sent!</h3>
+            <p class="text-xs text-slate-300 leading-relaxed mb-6">
+                Thanks for reaching out! Your message was received, and I'll get back to you at <span class="text-brand-brightRed font-mono" id="responseEmailDisplay"></span> as soon as possible.
+            </p>
+            <button onclick="closeSuccessModal()" class="w-full py-3 rounded-xl bg-brand-crimson text-white font-semibold text-xs hover:bg-brand-brightRed transition-colors">
+                Close
+            </button>
+        </div>
+    </div>
+
+    <!-- JavaScript Interactions -->
+    <script>
+        // Set dynamic year in footer
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        // -------------------------------------------------------------
+        // Particle Background Canvas Logic
+        // -------------------------------------------------------------
+        const canvas = document.getElementById('particleCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let particles = [];
+        let width = canvas.width = window.innerWidth;
+        let height = canvas.height = window.innerHeight;
+
+        window.addEventListener('resize', () => {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            initParticles();
+        });
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.size = Math.random() * 2 + 0.5;
+                this.speedX = (Math.random() - 0.5) * 0.4;
+                this.speedY = (Math.random() - 0.5) * 0.4;
+                this.opacity = Math.random() * 0.5 + 0.2;
+                this.color = Math.random() > 0.3 ? '#ff1a40' : '#ffffff';
+            }
+
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+
+                if (this.x < 0) this.x = width;
+                if (this.x > width) this.x = 0;
+                if (this.y < 0) this.y = height;
+                if (this.y > height) this.y = 0;
+            }
+
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.opacity;
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            const particleCount = Math.floor((width * height) / 18000);
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, width, height);
+            
+            // Subtle ambient dark gradient background draw
+            const grad = ctx.createRadialGradient(width / 2, height / 2, 100, width / 2, height / 2, Math.max(width, height));
+            grad.addColorStop(0, 'rgba(15, 5, 8, 0.4)');
+            grad.addColorStop(1, 'rgba(7, 7, 9, 0.9)');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, width, height);
+
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+
+            requestAnimationFrame(animateParticles);
+        }
+
+        initParticles();
+        animateParticles();
+
+        // -------------------------------------------------------------
+        // Navigation & Mobile Menu Logic
+        // -------------------------------------------------------------
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        mobileNavLinks.forEach(link => {
+            link.addEventListener('click', closeMobileMenu);
+        });
+
+        function closeMobileMenu() {
+            mobileMenu.classList.add('hidden');
+        }
+
+        // -------------------------------------------------------------
+        // Cookie Consent Logic (localStorage)
+        // -------------------------------------------------------------
+        const cookieBanner = document.getElementById('cookieBanner');
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const consent = localStorage.getItem('kdarkacy_cookie_consent');
+            if (!consent) {
+                setTimeout(() => {
+                    cookieBanner.classList.remove('translate-y-32', 'opacity-0', 'pointer-events-none');
+                }, 1200);
+            }
+        });
+
+        function acceptCookies() {
+            localStorage.setItem('kdarkacy_cookie_consent', 'accepted');
+            hideCookieBanner();
+        }
+
+        function declineCookies() {
+            localStorage.setItem('kdarkacy_cookie_consent', 'declined');
+            hideCookieBanner();
+        }
+
+        function hideCookieBanner() {
+            cookieBanner.classList.add('translate-y-32', 'opacity-0', 'pointer-events-none');
+        }
+
+        // -------------------------------------------------------------
+        // Privacy Policy Modal Logic
+        // -------------------------------------------------------------
+        const privacyModal = document.getElementById('privacyModal');
+
+        function openPrivacyModal() {
+            privacyModal.classList.remove('opacity-0', 'pointer-events-none');
+        }
+
+        function closePrivacyModal() {
+            privacyModal.classList.add('opacity-0', 'pointer-events-none');
+        }
+
+        // Close modal when clicking outside box
+        privacyModal.addEventListener('click', (e) => {
+            if (e.target === privacyModal) {
+                closePrivacyModal();
+            }
+        });
+
+        // -------------------------------------------------------------
+        // Contact Form Handling & Confirmation Modal
+        // -------------------------------------------------------------
+        const successModal = document.getElementById('successModal');
+        const responseEmailDisplay = document.getElementById('responseEmailDisplay');
+
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            const emailInput = document.getElementById('email').value;
+            
+            responseEmailDisplay.textContent = emailInput;
+            
+            // Reset Form
+            document.getElementById('contactForm').reset();
+
+            // Show Success Modal
+            successModal.classList.remove('opacity-0', 'pointer-events-none');
+        }
+
+        function closeSuccessModal() {
+            successModal.classList.add('opacity-0', 'pointer-events-none');
+        }
+
+        successModal.addEventListener('click', (e) => {
+            if (e.target === successModal) {
+                closeSuccessModal();
+            }
+        });
+    </script>
+</body>
+</html>
